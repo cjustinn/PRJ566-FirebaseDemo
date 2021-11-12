@@ -23,17 +23,21 @@ export class Registration extends React.Component {
         const { email, password, confirmPassword } = e.target.elements;
         if (password.value === confirmPassword.value) {
 
-            const registrationResponse = await RegisterWithEmail(email.value, password.value);
+            RegisterWithEmail(email.value, password.value).then((registrationResponse) => {
+                if (registrationResponse.success) {
+
+                    this.setState({ ...this.state, isProcessing: false }, () => null);
+    
+                } else {
+    
+                    this.setState({ ...this.state, isProcessing: false, errorMessage: parseErrorMessage(registrationResponse.errorMessage) }, () => null);
+    
+                }
+            }).catch((err) => {
+                this.setState({ ...this.state, isProcessing: false, errorMessage: parseErrorMessage(err.code) }, () => null);
+            });
             
-            if (registrationResponse.success) {
-
-                this.setState({ ...this.state, isProcessing: false }, () => null);
-
-            } else {
-
-                this.setState({ ...this.state, isProcessing: false, errorMessage: parseErrorMessage(registrationResponse.errorMessage) }, () => null);
-
-            }
+            
 
         } else { this.setState({ ...this.state, isProcessing: false, errorMessage: `Both entered passwords must match.` }, () => null); }
     }

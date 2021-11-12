@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, FloatingLabel, Form, Button, Spinner } from 'react-bootstrap';
-import { GetUserProfile, parseErrorMessage, UpdateUserProfile } from '../Firebase';
+import { GetUserProfile, parseErrorMessage, UpdateUserProfile, UploadProfilePicture } from '../Firebase';
 
 export class EditProfile extends React.Component {
     constructor(props) {
@@ -20,9 +20,30 @@ export class EditProfile extends React.Component {
 
         this.setState({ ...this.state, isProcessing: true }, () => null);
 
-        const { newDisplayName } = e.target.elements;
-        if (newDisplayName.value !== this.state.originalUserDetails.displayName) {
-            const uPResp = await UpdateUserProfile({ displayName: newDisplayName.value });
+        const { newDisplayName, newProfileImage } = e.target.elements;
+        if (newDisplayName.value !== this.state.originalUserDetails.displayName || newProfileImage.files[0] !== undefined) {
+
+            let updateObj = {
+                displayName: newDisplayName.value
+            };
+
+            if (newProfileImage.files[0] !== undefined) {
+
+                await UploadProfilePicture(new File([newProfileImage.files[0]], `${GetUserProfile().uid}-${Math.round(Date.now() / 1000)}`, { type: newProfileImage.files[0].type})).then((result) => {
+                    if (result.success === true && result.url !== null) {
+                        updateObj.photoURL = result.url;
+                    }
+                    else
+                    {
+                        this.setState({ ...this.state, errorMessage: parseErrorMessage(result.errorMessage) }, () => null);
+                    }
+                }).catch((err) => {
+                    this.setState({ ...this.state, errorMessage: parseErrorMessage(err.code)}, () => null);
+                });
+
+            }
+            
+            const uPResp = await UpdateUserProfile(updateObj);
             if (uPResp.success) {
                 this.setState({ ...this.state, isProcessing: false, successMessage: uPResp.errorMessage, errorMessage: null }, () => null);
             }
@@ -52,6 +73,10 @@ export class EditProfile extends React.Component {
                                     <FloatingLabel label="Display Name" className="mb-3">
                                         <Form.Control type="text" name="newDisplayName" defaultValue={this.state.originalUserDetails.displayName}/>
                                     </FloatingLabel>
+                                    <Form.Group className="mb-4">
+                                        <Form.Label className="text-muted">Profile Picture</Form.Label>
+                                        <Form.Control type="file" name="newProfileImage" accept="image/*"/>
+                                    </Form.Group>
                                     <FloatingLabel label="Account Created">
                                         <Form.Control type="text" defaultValue={this.state.originalUserDetails.meta.creationTime} readOnly/>
                                     </FloatingLabel>

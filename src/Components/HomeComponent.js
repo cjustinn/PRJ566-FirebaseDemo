@@ -17,7 +17,7 @@ export class Home extends React.Component {
         return (
             <Container fluid className="mt-3">
                 <Row md="2" sm="1">
-                    <Col md="8" sm="12" className="d-block">
+                    <Col md="6" sm="12" className="d-block">
                         <h1>Welcome, {this.state.userDetails.displayName}!</h1>
                         <p className="font-weight-light">
                             The purpose of this page is just to provide a quick demo, so you can see exactly how you would get access to the user's profile details (for display purposes),
@@ -25,7 +25,7 @@ export class Home extends React.Component {
                         </p>
                     </Col>
 
-                    <Col md="4" sm="12" className="d-none d-md-block">
+                    <Col md="6" sm="12" className="d-none d-md-block">
                         <table className="table table-striped table-bordered">
                             <thead>
                                 <tr>
@@ -54,6 +54,18 @@ export class Home extends React.Component {
                                 <tr>
                                     <td>User Id</td>
                                     <td>{this.state.userDetails.uid}</td>
+                                </tr>
+                                <tr>
+                                    <td>Profile Picture URL</td>
+                                    <td>{this.state.userDetails.profilePicture}</td>
+                                </tr>
+                                <tr>
+                                    <td>Account Created</td>
+                                    <td>{this.state.userDetails.meta.creationTime}</td>
+                                </tr>
+                                <tr>
+                                    <td>Last Sign-In</td>
+                                    <td>{this.state.userDetails.meta.lastSignInTime}</td>
                                 </tr>
                             </tbody>
                         </table>

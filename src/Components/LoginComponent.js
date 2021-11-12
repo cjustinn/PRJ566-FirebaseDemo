@@ -21,7 +21,6 @@ export class Login extends React.Component {
         const { email, password } = e.target.elements;
         const loginResponse = await LoginWithEmail(email.value, password.value);
         if (loginResponse.success) {
-            alert("Login successful!");
         } else {
 
             this.setState({...this.state, errorMessage: parseErrorMessage(loginResponse.errorMessage) }, () => null);

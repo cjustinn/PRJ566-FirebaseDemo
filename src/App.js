@@ -10,6 +10,7 @@ import { Container, Nav, Navbar, Offcanvas } from 'react-bootstrap';
 import NavbarCollapse from 'react-bootstrap/esm/NavbarCollapse';
 import { NavigationList } from './Components/NavigationComponent';
 import { EditProfile } from './Components/EditProfileComponent';
+import { Profile } from './Components/ProfileComponent';
 
 const AuthenticatedRoute = ({ component: C, ...props}) => {
   const { isAuthenticated } = useAuthState();
@@ -55,6 +56,7 @@ function App() {
         <Switch>
           <AuthenticatedRoute exact path="/" component={Home}/>
           <AuthenticatedRoute exact path="/edit-profile" component={EditProfile}/>
+          <AuthenticatedRoute exact path="/profile" component={Profile}/>
           <UnauthenticatedRoute exact path="/login" component={Login}/>
           <UnauthenticatedRoute exact path="/register" component={Registration}/>
           <Route path="*" component={NotFound}/>
@@ -64,7 +66,7 @@ function App() {
         <Navbar bg="light" variant="light">
           <Container fluid>
             <Navbar.Text>
-              <span className="text-muted"><small>&copy;2021 FIREBASE-DEMO-JMERCER INC., ALL RIGHTS RESERVED</small></span>
+              <span className="text-muted"><small>&copy;2021 FIREBASE-DEMO-JMERCER</small></span>
             </Navbar.Text>
           </Container>
         </Navbar>
