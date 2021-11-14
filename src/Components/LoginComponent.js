@@ -18,11 +18,14 @@ export class Login extends React.Component {
     async handleLogin(e) {
         e.preventDefault();
         
+        // Save constant references to the email and password inputs.
         const { email, password } = e.target.elements;
+        
+        // Attempt to login with the values entered in the inputs, and store the result in loginResponse.
         const loginResponse = await LoginWithEmail(email.value, password.value);
-        if (loginResponse.success) {
-        } else {
+        if (!loginResponse.success) {
 
+            // If login fails, set the errorMessage on the page to let the user know why.
             this.setState({...this.state, errorMessage: parseErrorMessage(loginResponse.errorMessage) }, () => null);
 
         }

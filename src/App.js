@@ -12,6 +12,7 @@ import { NavigationList } from './Components/NavigationComponent';
 import { EditProfile } from './Components/EditProfileComponent';
 import { Profile } from './Components/ProfileComponent';
 
+// Uses the authenticated state to return a component which renders either the provided component, or a redirect if not authenticated.
 const AuthenticatedRoute = ({ component: C, ...props}) => {
   const { isAuthenticated } = useAuthState();
   return (
@@ -19,6 +20,7 @@ const AuthenticatedRoute = ({ component: C, ...props}) => {
   );
 }
 
+// Uses the authenticated state to return a component which renders either the provided component, or a redirect if already authenticated.
 const UnauthenticatedRoute = ({ component: C, ...props}) => {
   const { isAuthenticated } = useAuthState();
   return (

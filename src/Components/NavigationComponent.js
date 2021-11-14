@@ -4,6 +4,11 @@ import { Nav } from 'react-bootstrap';
 import { LogoutUser, useAuthState } from '../Firebase';
 
 export const NavigationList = () => {
+    /*
+        Use the AuthContext created for the protected routes to display a different set of navigation options
+        in the sidebar for authenticated users versus non-authenticated users.
+    */
+   
     const { isAuthenticated } = useAuthState();
     if (isAuthenticated) {
         return (

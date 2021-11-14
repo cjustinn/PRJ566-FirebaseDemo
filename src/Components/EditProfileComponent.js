@@ -16,25 +16,40 @@ export class EditProfile extends React.Component {
     }
 
     async handleUpdate(e) {
+        // Stop the default form submission from taking place.
         e.preventDefault();
 
+        // Set the component's "isProcessing" state value to true-- this disables the submit button, changes it's text, and enables a spinner.
         this.setState({ ...this.state, isProcessing: true }, () => null);
 
+        // Get the references to the display name and image inputs.
         const { newDisplayName, newProfileImage } = e.target.elements;
+
+        // If the display name stored in the input is different from the user's current display name, or there was a file uploaded to the file input, then proceed.
         if (newDisplayName.value !== this.state.originalUserDetails.displayName || newProfileImage.files[0] !== undefined) {
 
+            // Create an object to store the new user profile data.
             let updateObj = {
-                displayName: newDisplayName.value
+                displayName: newDisplayName.value // Sets the displayName property to the newly entered value from the input.
             };
 
+            // If there was an image selected, complete the following if statement.
             if (newProfileImage.files[0] !== undefined) {
 
+                /*
+                    Invoke "UploadProfilePicture(file: File)", providing it with a new File created from the selected one, with the name changed to `${userid}-${currenttimestamp}`
+                    to ensure uniqueness, and set it's type to match the type of the selected file.
+
+                    Wait for the result of this upload-- if successful, add the "photoURL" field to the updateObj and set it's value to the newly uploaded file's download url.
+                    If not successful, set the state's errorMessage value to whatever error was returned to let the user know that their profile picture couldn't be updated.
+                */
                 await UploadProfilePicture(new File([newProfileImage.files[0]], `${GetUserProfile().uid}-${Math.round(Date.now() / 1000)}`, { type: newProfileImage.files[0].type})).then((result) => {
                     if (result.success === true && result.url !== null) {
                         updateObj.photoURL = result.url;
                     }
                     else
                     {
+                        // If the download url couldn't be found, set the error message so that the user knows that their profile picture won't be updated.
                         this.setState({ ...this.state, errorMessage: parseErrorMessage(result.errorMessage) }, () => null);
                     }
                 }).catch((err) => {
@@ -43,14 +58,18 @@ export class EditProfile extends React.Component {
 
             }
             
+            // Update the user's profile and wait for the result, storing it in uPResp.
             const uPResp = await UpdateUserProfile(updateObj);
             if (uPResp.success) {
+                // If successful, update the state of the component to show the success message.
                 this.setState({ ...this.state, isProcessing: false, successMessage: uPResp.errorMessage, errorMessage: null }, () => null);
             }
             else {
+                // If unsuccessful, update the state's errorMessage and set isProcessing to false to re-enable the submit button.
                 this.setState({ ...this.state, isProcessing: false, successMessage: null, errorMessage: parseErrorMessage(uPResp.errorMessage)}, () => null);
             }
         } else {
+            // There are no changes, so just immediately change isProcessing back to false to re-enable the submit button.
             this.setState({ ...this.state, isProcessing: false }, () => null);
         }
     }
